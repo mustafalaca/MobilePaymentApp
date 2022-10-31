@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">Mobile Payment App</string>
+    <string name="welcome_to_meppay">Welcome to MEPPAY</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="password">Password</string>
+    <string name="login">LOGIN</string>
+    <string name="forgot_password">FORGOT PASSWORD</string>
+    <string name="register">REGISTER</string>
+    <string name="re_password">Re Password</string>
+    <string name="balance">Balance :</string>
+    <string name="tl">₺</string>
+    <string name="air_token">AIR-Token :</string>
+    <string name="air_token_to_tl">TL Response :</string>
+    <string name="tl_wallet">TL Wallet :</string>
+    <string name="air_pay_wallet">AIR-PAY WALLET</string>
+    <string name="get_payment_list">Get Payment List</string>
+    <string name="settings">Settings</string>
+    <string name="save">Save</string>
+    <string name="plate_definition">Plaka Definition</string>
+    <string name="plakayi_giriniz">Enter License Plate :</string>
+    <string name="_0">0</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="old_password">Old Password</string>
+    <string name="new_password">New Password</string>
+    <string name="re_new_password">Re New Password</string>
+    <string name="change_password">Change Password</string>
+
+
+    <string name="money">Enter amount.</string>
+    <string name="exchange">Exchange</string>
+    <string name="rupees">Rupees</string>
+    <string name="condinglance">Condinglance</string>
+    <string name="enter_amount_to_load">Enter the amount you want to load</string>
+    <string name="load">LOAD</string>
+    <string name="payment_information">Payment Information</string>
+
+    <string-array name="currencies">
+        <item>AIR-TOKEN → TL</item>
+        <item>TL → AIR-TOKEN</item>
+    </string-array>
+</resources>

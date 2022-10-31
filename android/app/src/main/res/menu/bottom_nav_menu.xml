@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_wallet"
+        android:enabled="true"
+        android:icon="@drawable/wallet"
+        android:title="Cüzdanım"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_plates"
+        android:enabled="true"
+        android:icon="@drawable/star"
+        android:title="Plakalarım"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_home"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_home"
+        android:title="Plaka Tanımlama"
+        app:showAsAction="ifRoom" />
+</menu>
