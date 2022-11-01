@@ -1,5 +1,5 @@
 import os
-from backend.api.db_connection.db_table import session, UserTable, WalletTable
+from backend.api.db_connection.db_table import session, UserTable, WalletTable, TransactionHistory
 
 listener_api_url = os.getenv('LISTENER_API_URL')
 verify_value = bool(os.getenv('verify_value'))
@@ -162,3 +162,29 @@ class Wallet(dict):
                     "mock_token_to_tl": mock_token_to_tl,
                     "total": total}
         return {}
+
+    @classmethod
+    def create_transaction_history(cls, transaction_type, **data):
+        data_id_request = session.query(UserTable).filter_by(phone_number=data['phone_number']).first()
+        if data_id_request is not None:
+            fkUserId = data_id_request.id
+
+            new_transaction = TransactionHistory(fkUserId=fkUserId, phone_number=data['phone_number'],
+                                                 transaction_amount=float(data['paid_amount']),
+                                                 transaction_type=transaction_type)
+            session.add(new_transaction)
+            session.commit()
+            return True
+        return False
+
+    @classmethod
+    def get_transaction_history(cls, phone_number):
+        transaction_history = session.query(TransactionHistory).filter_by(phone_number=phone_number).all()
+        if transaction_history is not None:
+            result = []
+            for transaction in transaction_history:
+                transaction_dict = transaction.to_dict()
+                transaction_dict['transaction_amount'] = float(transaction.to_dict()['transaction_amount'])
+                result.append(transaction_dict)
+            return result
+        return []

@@ -102,6 +102,22 @@ class TransactionTable(Base, SerializerMixin):
                 self.fkPlateId = kwargs.get('fkPlateId')
 
 
+class TransactionHistory(Base, SerializerMixin):
+    __tablename__ = 'TransactionHistory'
+    id = Column(String, primary_key=True, default=str(bson.objectid.ObjectId()))
+    fkPlateId = Column(String)
+    phone_number = Column(String)
+    transaction_amount = Column(Float(24), default=0)
+    transaction_type = Column(String)
+    created_date = Column(DateTime, default=datetime.now())
+
+    def __init__(self, fkUserId, phone_number, transaction_amount, transaction_type):
+        self.fkUserId = fkUserId
+        self.phone_number = phone_number
+        self.transaction_amount = transaction_amount
+        self.transaction_type = transaction_type
+
+
 class FuelingTable(Base, SerializerMixin):
     __tablename__ = 'Fueling'
     id = Column(String, primary_key=True, default=str(bson.objectid.ObjectId()))
