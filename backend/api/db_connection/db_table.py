@@ -105,7 +105,7 @@ class TransactionTable(Base, SerializerMixin):
 class TransactionHistory(Base, SerializerMixin):
     __tablename__ = 'TransactionHistory'
     id = Column(String, primary_key=True, default=str(bson.objectid.ObjectId()))
-    fkPlateId = Column(String)
+    fkUserId = Column(String)
     phone_number = Column(String)
     transaction_amount = Column(Float(24), default=0)
     transaction_type = Column(String)

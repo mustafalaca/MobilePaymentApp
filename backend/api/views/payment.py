@@ -32,11 +32,3 @@ def pay():
                     return jsonify(wallet_update)
         return jsonify({}), 400
     return jsonify(402)  # Insufficient balance
-
-
-@bp.route('/transaction_history', methods=['POST'])
-@jwt_required()
-def transaction_history():
-    data = request.get_json()
-    response_data = Wallet.get_transaction_history(data['phone_number'])
-    return jsonify(response_data)

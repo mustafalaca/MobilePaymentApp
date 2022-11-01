@@ -49,3 +49,13 @@ def exchange():
             return jsonify(response_data)
         return abort(406)  # Insufficient balance
     return abort(400)
+
+
+@bp.route('/transaction_history', methods=['POST'])
+@jwt_required()
+def transaction_history():
+    data = request.get_json()
+    print("HISTORY GELEN DATA-- ", data)
+    response_data = Wallet.get_transaction_history(data['phone_number'])
+    print("HISTORY CEVAP DATA-- ", {"result": response_data})
+    return jsonify({"result": response_data})

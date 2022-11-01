@@ -184,6 +184,8 @@ class Wallet(dict):
             result = []
             for transaction in transaction_history:
                 transaction_dict = transaction.to_dict()
+                del transaction_dict['fkUserId']
+                del transaction_dict['id']
                 result.append(transaction_dict)
             return result
         return []
