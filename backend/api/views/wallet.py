@@ -20,9 +20,9 @@ def get_wallet_data():
 def update_wallet_data():
     data = request.get_json()
     response_data = Wallet.deposit_money(phone_number=data['phone_number'], tl=data['tl'])
-    transaction_amount = data.pop('tl')
-    data['paid_amount'] = float(transaction_amount)
-    Wallet.create_transaction_history(transaction_type='deposit', **data)
+    transaction_amount = float(data.pop('tl'))
+    Wallet.create_transaction_history(transaction_type='deposit', phone_number=data['phone_number'],
+                                      transaction_amount=transaction_amount)
 
     return jsonify(response_data)
 
@@ -35,17 +35,17 @@ def exchange():
     if 'tl' in data:
         if balance_availability['tl'] >= data['tl']:
             response_data = Wallet.exchange_to_mock(phone_number=data['phone_number'], tl=data['tl'])
-            transaction_amount = data.pop('tl')
-            data['paid_amount'] = float(-transaction_amount)
-            Wallet.create_transaction_history(transaction_type='exchange_to_token', **data)
+            transaction_amount = float(-data.pop('tl'))
+            Wallet.create_transaction_history(transaction_type='exchange_to_token', phone_number=data['phone_number'],
+                                              transaction_amount=transaction_amount)
             return jsonify(response_data)
         return abort(406)  # Insufficient balance
     elif 'mock_token' in data:
         if balance_availability['mock_token'] >= data['mock_token']:
             response_data = Wallet.exchange_to_tl(phone_number=data['phone_number'], mock_token=data['mock_token'])
-            transaction_amount = data.pop('tl')
-            data['paid_amount'] = float(transaction_amount)
-            Wallet.create_transaction_history(transaction_type='exchange_to_tl', **data)
+            transaction_amount = float(data.pop('tl'))
+            Wallet.create_transaction_history(transaction_type='exchange_to_tl', phone_number=data['phone_number'],
+                                              transaction_amount=transaction_amount)
             return jsonify(response_data)
         return abort(406)  # Insufficient balance
     return abort(400)

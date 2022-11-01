@@ -164,13 +164,13 @@ class Wallet(dict):
         return {}
 
     @classmethod
-    def create_transaction_history(cls, transaction_type, **data):
-        data_id_request = session.query(UserTable).filter_by(phone_number=data['phone_number']).first()
+    def create_transaction_history(cls, transaction_type, phone_number, transaction_amount):
+        data_id_request = session.query(UserTable).filter_by(phone_number=phone_number).first()
         if data_id_request is not None:
             fkUserId = data_id_request.id
 
-            new_transaction = TransactionHistory(fkUserId=fkUserId, phone_number=data['phone_number'],
-                                                 transaction_amount=float(data['paid_amount']),
+            new_transaction = TransactionHistory(fkUserId=fkUserId, phone_number=phone_number,
+                                                 transaction_amount=float(transaction_amount),
                                                  transaction_type=transaction_type)
             session.add(new_transaction)
             session.commit()
@@ -184,7 +184,6 @@ class Wallet(dict):
             result = []
             for transaction in transaction_history:
                 transaction_dict = transaction.to_dict()
-                transaction_dict['transaction_amount'] = float(transaction.to_dict()['transaction_amount'])
                 result.append(transaction_dict)
             return result
         return []
