@@ -1,7 +1,6 @@
 from datetime import datetime
 import os
-from backend.api.db_connection.db_table import session, FuelingTable, PlateTable, TransactionTable, TransactionHistory, \
-    UserTable
+from backend.api.db_connection.db_table import session, FuelingTable, PlateTable, TransactionTable
 
 listener_api_url = os.getenv('LISTENER_API_URL')
 verify_value = bool(os.getenv('verify_value'))
@@ -45,8 +44,8 @@ class Payment(dict):
                 self.phone_number = kwargs.get('phone_number')
         super().__init__(**kwargs)
 
-    @classmethod
-    def pay(cls, **data):
+    @staticmethod
+    def pay(**data):
         data_id_request = session.query(PlateTable).filter_by(
             customer_license_plate=data['customer_license_plate']).first()
         if data_id_request is not None:
@@ -58,9 +57,8 @@ class Payment(dict):
             return True
         return False
 
-    @classmethod
-    def get_to_pay(cls, customer_license_plate):
-        fueling_to_pay = session.query(FuelingTable).filter_by(customer_license_plate=customer_license_plate).all()
+    def get_to_pay(self):
+        fueling_to_pay = session.query(FuelingTable).filter_by(customer_license_plate=self.customer_license_plate).all()
         if fueling_to_pay is not None:
             result = []
             for fueling in fueling_to_pay:
@@ -78,9 +76,9 @@ class Payment(dict):
             return result
         return []
 
-    @classmethod
-    def delete_paid_payment(cls, customer_license_plate):
-        delete_plate = session.query(FuelingTable).filter_by(customer_license_plate=customer_license_plate).delete()
+    def delete_paid_payment(self):
+        delete_plate = session.query(FuelingTable).filter_by(
+            customer_license_plate=self.customer_license_plate).delete()
         if delete_plate == 1:
             session.commit()
             return True

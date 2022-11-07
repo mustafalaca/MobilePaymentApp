@@ -9,8 +9,8 @@ bp = Blueprint("plate", __name__)
 @jwt_required()
 def add_plates_view():
     data = request.get_json()
-    response = Plate.add_plate(phone_number=data['phone_number'],
-                               customer_license_plate=data['customer_license_plate'])
+    plate_obj = Plate(**data)
+    response = plate_obj.add_plate()
     if response is True:
         return jsonify(200)
     return jsonify(400)
@@ -20,7 +20,8 @@ def add_plates_view():
 @jwt_required()
 def get_all_plates():
     data = request.get_json()
-    response = Plate.get_plates(phone_number=data['phone_number'])
+    plate_obj = Plate(**data)
+    response = plate_obj.get_plates()
     return jsonify(response)
 
 
@@ -28,7 +29,8 @@ def get_all_plates():
 @jwt_required()
 def plate_payment_history():
     data = request.get_json()
-    response = Plate.payment_history(customer_license_plate=data['customer_license_plate'])
+    plate_obj = Plate(**data)
+    response = plate_obj.payment_history()
     return jsonify(response)
 
 
@@ -36,8 +38,8 @@ def plate_payment_history():
 @jwt_required()
 def delete_plate():
     data = request.get_json()
-    response = Plate.del_plate(phone_number=data['phone_number'],
-                               customer_license_plate=data['customer_license_plate'])
+    plate_obj = Plate(**data)
+    response = plate_obj.del_plate()
     if response is True:
         return jsonify(200)
     return abort(400)

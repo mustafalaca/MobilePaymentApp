@@ -19,7 +19,8 @@ def get_wallet_data():
 @jwt_required()
 def update_wallet_data():
     data = request.get_json()
-    response_data = Wallet.deposit_money(phone_number=data['phone_number'], tl=data['tl'])
+    wallet_obj = Wallet(**data)
+    response_data = wallet_obj.deposit_money(tl=data['tl'])
     transaction_amount = float(data.pop('tl'))
     Wallet.create_transaction_history(transaction_type='deposit', phone_number=data['phone_number'],
                                       transaction_amount=transaction_amount)
@@ -34,7 +35,7 @@ def exchange():
     balance_availability = Wallet.get_wallet_data(data['phone_number'])
     if 'tl' in data:
         if balance_availability['tl'] >= data['tl']:
-            response_data = Wallet.exchange_to_mock(phone_number=data['phone_number'], tl=data['tl'])
+            response_data = Wallet.exchange_to_mock(**data)
             transaction_amount = float(-data.pop('tl'))
             Wallet.create_transaction_history(transaction_type='exchange_to_token', phone_number=data['phone_number'],
                                               transaction_amount=transaction_amount)
@@ -42,7 +43,7 @@ def exchange():
         return abort(406)  # Insufficient balance
     elif 'mock_token' in data:
         if balance_availability['mock_token'] >= data['mock_token']:
-            response_data = Wallet.exchange_to_tl(phone_number=data['phone_number'], mock_token=data['mock_token'])
+            response_data = Wallet.exchange_to_tl(**data)
             transaction_amount = float(data.pop('tl'))
             Wallet.create_transaction_history(transaction_type='exchange_to_tl', phone_number=data['phone_number'],
                                               transaction_amount=transaction_amount)
@@ -55,7 +56,6 @@ def exchange():
 @jwt_required()
 def transaction_history():
     data = request.get_json()
-    print("HISTORY GELEN DATA-- ", data)
-    response_data = Wallet.get_transaction_history(data['phone_number'])
-    print("HISTORY CEVAP DATA-- ", {"result": response_data})
+    wallet_obj = Wallet(**data)
+    response_data = wallet_obj.get_transaction_history()
     return jsonify({"result": response_data})

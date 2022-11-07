@@ -12,7 +12,8 @@ def register():
     data = request.get_json()
     registration_response = user_controller.registration_control(data)
     if registration_response is True:
-        create_wallet = Wallet.create_wallet(data['phone_number'])
+        new_wallet = Wallet(**data)
+        create_wallet = new_wallet.create_wallet()
         if create_wallet is True:
             return jsonify(200)
     return abort(409)
@@ -29,7 +30,8 @@ def login():
 @jwt_required()
 def change_password():
     data = request.get_json()
-    update_password_response = User.update_password(**data)
+    update_password_response = User.update_password(phone_number=data['phone_number'],
+                                                    new_password=data['new_password'])
     if update_password_response is True:
         return jsonify(200)
     return abort(400)

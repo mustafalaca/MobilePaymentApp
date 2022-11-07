@@ -12,21 +12,19 @@ class Plate(dict):
         self.phone_number = phone_number
         super().__init__(customer_license_plate=self.customer_license_plate, phone_number=self.phone_number)
 
-    @classmethod
-    def add_plate(cls, phone_number, customer_license_plate):
-        data_id_request = session.query(UserTable).filter_by(phone_number=phone_number).first()
+    def add_plate(self):
+        data_id_request = session.query(UserTable).filter_by(phone_number=self.phone_number).first()
         if data_id_request is not None:
             fkUserId = data_id_request.id
-            new_wallet = PlateTable(phone_number=phone_number, customer_license_plate=customer_license_plate,
+            new_wallet = PlateTable(phone_number=self.phone_number, customer_license_plate=self.customer_license_plate,
                                     fkUserId=fkUserId)
             session.add(new_wallet)
             session.commit()
             return True
         return False
 
-    @classmethod
-    def get_plates(cls, phone_number):
-        get_all_plates_response = session.query(PlateTable).filter_by(phone_number=phone_number).all()
+    def get_plates(self):
+        get_all_plates_response = session.query(PlateTable).filter_by(phone_number=self.phone_number).all()
         if get_all_plates_response is not None:
             result = []
             for plate in get_all_plates_response:
@@ -35,16 +33,14 @@ class Plate(dict):
             return result
         return []
 
-    @classmethod
-    def payment_history(cls, customer_license_plate):
+    def payment_history(self):
         plate_payment_history_response = requests.post(f"{listener_api_url}/plate_payment_history",
-                                                       json={"customer_license_plate": customer_license_plate},
+                                                       json={"customer_license_plate": self.customer_license_plate},
                                                        verify=verify_value)
         return plate_payment_history_response.json()
 
-    @classmethod
-    def del_plate(cls, phone_number, customer_license_plate):
-        delete_plate = session.query(PlateTable).filter_by(customer_license_plate=customer_license_plate).delete()
+    def del_plate(self):
+        delete_plate = session.query(PlateTable).filter_by(customer_license_plate=self.customer_license_plate).delete()
         if delete_plate == 1:
             session.commit()
             return True

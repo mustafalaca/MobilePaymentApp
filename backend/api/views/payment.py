@@ -10,7 +10,8 @@ bp = Blueprint("payment", __name__)
 @jwt_required()
 def get_payment():
     data = request.get_json()
-    response_data = Payment.get_to_pay(data['customer_license_plate'])
+    payment = Payment(**data)
+    response_data = payment.get_to_pay()
     return jsonify({"payment": response_data})
 
 
@@ -18,16 +19,18 @@ def get_payment():
 @jwt_required()
 def pay():
     data = request.get_json()
-    wallet_amount = Wallet.check_wallet_amount(data['phone_number'])
+    wallet = Wallet(**data)
+    payment = Payment(**data)
+    wallet_amount = wallet.check_wallet_amount()
     if float(wallet_amount) >= float(data['paid_amount']):
-        transaction_response = Payment.pay(**data)
+        transaction_response = payment.pay()
         if transaction_response is True:
-            wallet_update = Wallet.update_wallet_on_payment(data['phone_number'], data['paid_amount'], data['liter'])
-            delete_paid_payment = Payment.delete_paid_payment(data['customer_license_plate'])
+            wallet_update = wallet.update_wallet_on_payment()
+            delete_paid_payment = payment.delete_paid_payment()
             if delete_paid_payment is True:
                 transaction_amount = data.pop('paid_amount')
                 data['paid_amount'] = float(-transaction_amount)
-                update_transaction_history = Wallet.create_transaction_history(transaction_type='payment', **data)
+                update_transaction_history = wallet.create_transaction_history(transaction_type='payment', **data)
                 if update_transaction_history is True:
                     return jsonify(wallet_update)
         return jsonify({}), 400

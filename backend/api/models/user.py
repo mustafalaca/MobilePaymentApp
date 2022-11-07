@@ -25,13 +25,9 @@ class User(dict):
             return True
         return False
 
-    @classmethod
-    def update_password(cls, **kwargs):
-        phone_number = kwargs.get("phone_number")
-        new_password = kwargs.get("new_password")
-
-        update_password = session.query(UserTable).filter(phone_number == phone_number).one()
+    @staticmethod
+    def update_password(phone_number, new_password):
+        update_password = session.query(UserTable).filter(phone_number=phone_number).one()
         update_password.password = hashlib.md5(new_password.encode()).hexdigest()
         session.commit()
         return True
-
