@@ -33,21 +33,23 @@ def update_wallet_data():
 @jwt_required()
 def exchange():
     data = request.get_json()
-    balance_availability = Wallet.get_wallet_data(data['phone_number'])
+    wallet_obj = Wallet(**data)
+    balance_availability = wallet_obj.get_wallet_data()
     if 'tl' in data:
         if balance_availability['tl'] >= data['tl']:
-            response_data = Wallet.exchange_to_mock(**data)
+            response_data = wallet_obj.exchange_to_mock(**data)
             transaction_amount = float(-data.pop('tl'))
-            Wallet.create_transaction_history(transaction_type='exchange_to_token', phone_number=data['phone_number'],
-                                              transaction_amount=transaction_amount)
+            wallet_obj.create_transaction_history(transaction_type='exchange_to_token',
+                                                  phone_number=data['phone_number'],
+                                                  transaction_amount=transaction_amount)
             return jsonify(response_data)
         return abort(406)  # Insufficient balance
     elif 'mock_token' in data:
         if balance_availability['mock_token'] >= data['mock_token']:
-            response_data = Wallet.exchange_to_tl(**data)
+            response_data = wallet_obj.exchange_to_tl(**data)
             transaction_amount = float(data.pop('tl'))
-            Wallet.create_transaction_history(transaction_type='exchange_to_tl', phone_number=data['phone_number'],
-                                              transaction_amount=transaction_amount)
+            wallet_obj.create_transaction_history(transaction_type='exchange_to_tl', phone_number=data['phone_number'],
+                                                  transaction_amount=transaction_amount)
             return jsonify(response_data)
         return abort(406)  # Insufficient balance
     return abort(400)
