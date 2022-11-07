@@ -10,7 +10,8 @@ bp = Blueprint("wallet", __name__)
 def get_wallet_data():
     data = request.get_json()
     if data != {}:
-        response_data = Wallet.get_wallet_data(data['phone_number'])
+        wallet_obj = Wallet(**data)
+        response_data = wallet_obj.get_wallet_data()
         return jsonify(response_data)
     return {}
 
